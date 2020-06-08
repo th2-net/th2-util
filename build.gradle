@@ -55,6 +55,8 @@ allprojects {
         }
     }
 
+    artifactoryPublish.skip = true
+
     artifactory {
         publish {
             defaults {

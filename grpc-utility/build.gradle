@@ -66,6 +66,8 @@ task zipProtobuf (type: Zip) {
     from sourceSets.main.proto.srcDirs
 }
 
+artifactoryPublish.skip = false
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
