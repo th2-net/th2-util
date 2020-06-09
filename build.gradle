@@ -85,6 +85,7 @@ archivesBaseName = 'utility-service'
 
 dependencies {
     compile project(':grpc-utility')
+
     compile "com.exactpro.th2:th2-common:${th2CommonVersion}"
 
     compile "com.exactpro.sf:sailfish-core:${sailfishVersion}"
@@ -104,7 +105,7 @@ publishing {
 }
 
 application {
-    mainClassName 'com.exactpro.th2.utility.UtilityMain'
+    mainClassName 'com.exactpro.th2.utility.MicroserviceMain'
 }
 
 applicationName = archivesBaseName

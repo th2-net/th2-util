@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 Exactpro (Exactpro Systems Limited)
+ * Copyright $today.year-2020 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.exactpro.th2.utility;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package com.exactpro.th2.utility.configuration;
 
-public class UtilityMain {
-    private final static Logger LOGGER = LoggerFactory.getLogger(UtilityMain.class);
+import java.io.IOException;
+import java.io.InputStream;
 
-    /**
-     * Environment variables:
-     *  {@link com.exactpro.th2.configuration.Configuration#ENV_GRPC_PORT}
-     */
-    public static void main(String[] args) {
-        try {
+import com.exactpro.th2.configuration.Configuration;
 
-        } catch (Throwable e) {
-            LOGGER.error("Fatal error: {}", e.getMessage(), e);
-            System.exit(-1);
-        }
+public class UtilityConfiguration extends Configuration {
+
+    public static UtilityConfiguration load(InputStream inputStream) throws IOException {
+        return (UtilityConfiguration)YAML_READER.readValue(inputStream, Configuration.class);
     }
 }
