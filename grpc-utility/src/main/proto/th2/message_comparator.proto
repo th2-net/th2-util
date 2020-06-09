@@ -7,29 +7,58 @@ option java_multiple_files = true;
 option java_package = "com.exactpro.th2.utility.messagecomparator.grpc";
 
 service MessageComparatorService {
-    // Compare one or more messages using one filter
-    rpc compareMessages (CompareMessagesRequest) returns (CompareMessagesResponse);
+    // Compare one filter versus some messages
+    rpc compareFilterVsMessages (CompareFilterVsMessagesRequest) returns (CompareFilterVsMessagesResponse);
+    // Compare one message versus one message
+    rpc compareMessageVsMessage (CompareMessageVsMessageRequest) returns (CompareMessageVsMessageResponse);
 }
 
-message CompareMessagesRequest {
+//--// Compare filter versus messages //--//
+
+message CompareFilterVsMessagesRequest {
     MessageFilter filter = 1;
-    repeated Message actuals = 2;
+    repeated Message messages = 2;
+    // TODO: add comparison settings
 }
 
-message CompareMessagesResponse {
-    repeated MessageComparisonResult Comparison_results = 1;
+message CompareFilterVsMessagesResponse {
+    repeated CompareFilterVsMessageResult comparison_results = 1;
 }
 
-message MessageComparisonResult {
-    MessageID actual_message_id = 1;
+message CompareFilterVsMessageResult {
+    MessageID message_id = 1;
     ComparisonEntry comparison_result = 2;
 }
+
+//--// Compare message versus message //--//
+
+message CompareMessageVsMessageRequest {
+    repeated CompareMessageVsMessageTask comparison_tasks = 1;
+}
+
+message CompareMessageVsMessageResponse {
+    repeated CompareMessageVsMessageResult comparison_results = 1;
+}
+
+message CompareMessageVsMessageTask {
+    Message first = 1;
+    Message second = 2;
+    // TODO: add comparison settings
+}
+
+message CompareMessageVsMessageResult {
+    MessageID first_message_id = 1;
+    MessageID second_message_id = 2;
+    ComparisonEntry comparison_result = 3;
+}
+
+//--// Common entry //--//
 
 message ComparisonEntry {
     ComparisonEntryType type = 1; // is null for root entry otherwise it is required
     ComparisonEntryStatus status = 2; // is null for collection entry type otherwise it is required
-    string expected = 3; // This value is null for root entry otherwise it is required
-    string actual = 4; // This value is null for root entry otherwise it is required
+    string first = 3; // This value is null for root entry otherwise it is required
+    string second = 4; // This value is null for root entry otherwise it is required
     FilterOperation operation = 5; // is null for root entry otherwise it is required
     bool is_key = 6; // is null for root entry otherwise it is required
     map<string, ComparisonEntry> fields = 7;
