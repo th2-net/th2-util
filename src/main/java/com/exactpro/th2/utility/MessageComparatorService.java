@@ -128,7 +128,7 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
             return CompareMessageVsMessageResult.newBuilder()
                     .setFirstMessageId(first.getMessageId())
                     .setSecondMessageId(second.getMessageId())
-                    .setComparisonResult(putSubComparisons(ComparisonEntry.newBuilder(), comparisonResult)
+                    .setComparisonResult(convertAndPutSubComparisons(ComparisonEntry.newBuilder(), comparisonResult)
                             .setStatus(convertToProto(getStatusType(comparisonResult))))
                     .build();
         }
@@ -146,7 +146,7 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
         @Nullable
         private static ComparisonEntryStatus convertToProto(StatusType statusType) {
             if (statusType == null) {
-                return null;
+                throw new IllegalArgumentException("Status can't be null");
             }
 
             switch (statusType) {
@@ -162,13 +162,16 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
         }
 
         private static ComparisonEntry convertToComparisonEntry(ComparisonResult comparisonResult) {
-            return putSubComparisons(ComparisonEntry.newBuilder()
+            Builder builder = ComparisonEntry.newBuilder()
                     .setFirst(Formatter.formatExpected(comparisonResult))
                     .setSecond(Objects.toString(comparisonResult.getActual(), null))
-                    .setStatus(convertToProto(comparisonResult.getStatus()))
                     .setType(comparisonResult.hasResults()
                             ? ComparisonEntryType.COLLECTION
-                            : ComparisonEntryType.FIELD), comparisonResult)
+                            : ComparisonEntryType.FIELD);
+            if (comparisonResult.getStatus() != null) {
+                builder.setStatus(convertToProto(comparisonResult.getStatus()));
+            }
+            return convertAndPutSubComparisons(builder, comparisonResult)
                     .build();
             //            verificationEntry.setKey(isKey(comparisonResult, metaContainer));
             //            verificationEntry.setOperation(resolveOperation(comparisonResult));
@@ -177,7 +180,7 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
             //                    : metaContainer.get(comparisonResult.getName()).get(0);
         }
 
-        private static Builder putSubComparisons(Builder comparisonResultBuilder, ComparisonResult comparisonResult) {
+        private static Builder convertAndPutSubComparisons(Builder comparisonResultBuilder, ComparisonResult comparisonResult) {
             if (comparisonResult.hasResults()) {
                 comparisonResult.getResults().forEach((fieldName, fieldComparison) -> comparisonResultBuilder.putFields(fieldName, convertToComparisonEntry(fieldComparison)));
             }

@@ -27,117 +27,117 @@ pipeline {
                 }
             }
         }
-        stage('Checkout inspections') {
-            steps {
-                dir('inspections') {
-                    checkout([
-                        $class: 'GitSCM',
-                        branches: [[name: "*/master"]],
-                        doGenerateSubmoduleConfigurations: false,
-                        extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'intellij-idea-settings']],
-                        submoduleCfg: [],
-                        userRemoteConfigs: [[credentialsId: 'a0812ef2-e2e5-4b0d-9af8-d7be9c4b86ab', url: 'git@gitlab.exactpro.com:vivarium/th2/intellij-idea-settings.git']]
-                    ])
-                }
-            }
-        }
-        stage('Run inspections') {
-            steps {
-                dir('inspections') {
-                    // jvm options
-                    writeFile file: IDEA_VM_OPTIONS, text: '''\
-                        -Xms2048m
-                        -Xmx2048m
-                        -XX:ReservedCodeCacheSize=240m
-                        -XX:+UseConcMarkSweepGC
-                        -XX:SoftRefLRUPolicyMSPerMB=50
-                        -ea
-                        -XX:CICompilerCount=2
-                        -Dsun.io.useCanonPrefixCache=false
-                        -Djava.net.preferIPv4Stack=true
-                        -Djdk.http.auth.tunneling.disabledSchemes=""
-                        -XX:+HeapDumpOnOutOfMemoryError
-                        -XX:-OmitStackTraceInFastThrow
-                        -Djdk.attach.allowAttachSelf=true
-                        -Dkotlinx.coroutines.debug=off
-                        -Djdk.module.illegalAccess.silent=true
-                        -Dawt.useSystemAAFontSettings=lcd
-                        -Dsun.java2d.renderer=sun.java2d.marlin.MarlinRenderingEngine
-                        -Dsun.tools.attach.tmp.only=true
-                    '''.stripIndent()
-
-                    // files filter
-                    writeFile file: IDEA_PROPERTIES, text: """\
-                            idea.config.path="${pwd()}"
-                            idea.log.path="${pwd()}/log"
-                            idea.exclude.patterns=\\
-                                **/*gradle*;\\
-                                **/*.bat;\\
-                                **/*.xhtml;\\
-                                **/*.png;\\
-                                **/*.gif;\\
-                                **/*.ftlh;\\
-                                **/*.html;\\
-                                **/*.jar;\\
-                                **/*.json;\\
-                                **/*.xml;\\
-                                **/*.sql;\\
-                                **/*.csv;\\
-                                **/*.svg;\\
-                                **/*.css;\\
-                                **/*.ts;\\
-                                **/*.js;\\
-                                **/src/gen/**;\\
-                                inspections*
-                    """.stripIndent()
-
-                    // disable plugins
-                    writeFile file: 'disabled_plugins.txt', text: '''\
-                            AntSupport
-                            ByteCodeViewer
-                            Coverage
-                            DevKit
-                            Git4Idea
-                            JUnit
-                            Subversion
-                            TestNG-J
-                            com.android.tools.idea.smali
-                            com.intellij.copyright
-                            com.intellij.stats.completion
-                            com.intellij.tasks
-                            com.intellij.uiDesigner
-                            com.jetbrains.changeReminder
-                            com.jetbrains.sh
-                            hg4idea
-                            org.editorconfig.editorconfigjetbrains
-                            org.intellij.plugins.markdown
-                            org.jetbrains.android
-                            org.jetbrains.debugger.streams
-                            org.jetbrains.idea.eclipse
-                            org.jetbrains.plugins.github
-                            org.jetbrains.plugins.terminal
-                            org.jetbrains.plugins.textmate
-                    '''.stripIndent()
-
-                    sh """\
-                        ~/idea-IC-193.6494.35/bin/inspect.sh \\
-                            "$WORKSPACE" \\
-                            "\$(pwd)/intellij-idea-settings/inspection/Evolution.xml" \\
-                            "\$(pwd)/results/" \\
-                            -v2
-                    """.stripIndent()
-                }
-            }
-        }
-        stage('Publish inspections report') {
-            steps {
-                dir('inspections') {
-                    recordIssues enabledForFailure: true,
-                        tool: ideaInspection(pattern: '**/results/*.xml'),
-                        qualityGates: [[threshold: 1, type: 'TOTAL_HIGH', failed: true]]
-                }
-            }
-        }
+//         stage('Checkout inspections') {
+//             steps {
+//                 dir('inspections') {
+//                     checkout([
+//                         $class: 'GitSCM',
+//                         branches: [[name: "*/master"]],
+//                         doGenerateSubmoduleConfigurations: false,
+//                         extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'intellij-idea-settings']],
+//                         submoduleCfg: [],
+//                         userRemoteConfigs: [[credentialsId: 'a0812ef2-e2e5-4b0d-9af8-d7be9c4b86ab', url: 'git@gitlab.exactpro.com:vivarium/th2/intellij-idea-settings.git']]
+//                     ])
+//                 }
+//             }
+//         }
+//         stage('Run inspections') {
+//             steps {
+//                 dir('inspections') {
+//                     // jvm options
+//                     writeFile file: IDEA_VM_OPTIONS, text: '''\
+//                         -Xms2048m
+//                         -Xmx2048m
+//                         -XX:ReservedCodeCacheSize=240m
+//                         -XX:+UseConcMarkSweepGC
+//                         -XX:SoftRefLRUPolicyMSPerMB=50
+//                         -ea
+//                         -XX:CICompilerCount=2
+//                         -Dsun.io.useCanonPrefixCache=false
+//                         -Djava.net.preferIPv4Stack=true
+//                         -Djdk.http.auth.tunneling.disabledSchemes=""
+//                         -XX:+HeapDumpOnOutOfMemoryError
+//                         -XX:-OmitStackTraceInFastThrow
+//                         -Djdk.attach.allowAttachSelf=true
+//                         -Dkotlinx.coroutines.debug=off
+//                         -Djdk.module.illegalAccess.silent=true
+//                         -Dawt.useSystemAAFontSettings=lcd
+//                         -Dsun.java2d.renderer=sun.java2d.marlin.MarlinRenderingEngine
+//                         -Dsun.tools.attach.tmp.only=true
+//                     '''.stripIndent()
+//
+//                     // files filter
+//                     writeFile file: IDEA_PROPERTIES, text: """\
+//                             idea.config.path="${pwd()}"
+//                             idea.log.path="${pwd()}/log"
+//                             idea.exclude.patterns=\\
+//                                 **/*gradle*;\\
+//                                 **/*.bat;\\
+//                                 **/*.xhtml;\\
+//                                 **/*.png;\\
+//                                 **/*.gif;\\
+//                                 **/*.ftlh;\\
+//                                 **/*.html;\\
+//                                 **/*.jar;\\
+//                                 **/*.json;\\
+//                                 **/*.xml;\\
+//                                 **/*.sql;\\
+//                                 **/*.csv;\\
+//                                 **/*.svg;\\
+//                                 **/*.css;\\
+//                                 **/*.ts;\\
+//                                 **/*.js;\\
+//                                 **/src/gen/**;\\
+//                                 inspections*
+//                     """.stripIndent()
+//
+//                     // disable plugins
+//                     writeFile file: 'disabled_plugins.txt', text: '''\
+//                             AntSupport
+//                             ByteCodeViewer
+//                             Coverage
+//                             DevKit
+//                             Git4Idea
+//                             JUnit
+//                             Subversion
+//                             TestNG-J
+//                             com.android.tools.idea.smali
+//                             com.intellij.copyright
+//                             com.intellij.stats.completion
+//                             com.intellij.tasks
+//                             com.intellij.uiDesigner
+//                             com.jetbrains.changeReminder
+//                             com.jetbrains.sh
+//                             hg4idea
+//                             org.editorconfig.editorconfigjetbrains
+//                             org.intellij.plugins.markdown
+//                             org.jetbrains.android
+//                             org.jetbrains.debugger.streams
+//                             org.jetbrains.idea.eclipse
+//                             org.jetbrains.plugins.github
+//                             org.jetbrains.plugins.terminal
+//                             org.jetbrains.plugins.textmate
+//                     '''.stripIndent()
+//
+//                     sh """\
+//                         ~/idea-IC-193.6494.35/bin/inspect.sh \\
+//                             "$WORKSPACE" \\
+//                             "\$(pwd)/intellij-idea-settings/inspection/Evolution.xml" \\
+//                             "\$(pwd)/results/" \\
+//                             -v2
+//                     """.stripIndent()
+//                 }
+//             }
+//         }
+//         stage('Publish inspections report') {
+//             steps {
+//                 dir('inspections') {
+//                     recordIssues enabledForFailure: true,
+//                         tool: ideaInspection(pattern: '**/results/*.xml'),
+//                         qualityGates: [[threshold: 1, type: 'TOTAL_HIGH', failed: true]]
+//                 }
+//             }
+//         }
         stage ('Artifactory configuration') {
             steps {
                 rtGradleDeployer (

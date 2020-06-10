@@ -55,11 +55,11 @@ message CompareMessageVsMessageResult {
 //--// Common entry //--//
 
 message ComparisonEntry {
-    ComparisonEntryType type = 1; // is null for root entry otherwise it is required
-    ComparisonEntryStatus status = 2; // is null for collection entry type otherwise it is required
+    ComparisonEntryType type = 1; // isn't set for root entry otherwise it is required
+    ComparisonEntryStatus status = 2; // isn't set for collection entry type otherwise it is required
     string first = 3; // This value is null for root entry otherwise it is required
     string second = 4; // This value is null for root entry otherwise it is required
-    FilterOperation operation = 5; // is null for root entry otherwise it is required
+    FilterOperation operation = 5; // isn't set for root entry otherwise it is required
     bool is_key = 6; // is null for root entry otherwise it is required
     map<string, ComparisonEntry> fields = 7;
 }
