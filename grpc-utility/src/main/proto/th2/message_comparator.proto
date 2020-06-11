@@ -13,12 +13,17 @@ service MessageComparatorService {
     rpc compareMessageVsMessage (CompareMessageVsMessageRequest) returns (CompareMessageVsMessageResponse);
 }
 
+//--// Settings //--//
+message ComparisonSettings {
+    repeated string ignore_fields = 1;
+}
+
 //--// Compare filter versus messages //--//
 
 message CompareFilterVsMessagesRequest {
     MessageFilter filter = 1;
     repeated Message messages = 2;
-    // TODO: add comparison settings
+    ComparisonSettings settings = 3;
 }
 
 message CompareFilterVsMessagesResponse {
@@ -43,7 +48,7 @@ message CompareMessageVsMessageResponse {
 message CompareMessageVsMessageTask {
     Message first = 1;
     Message second = 2;
-    // TODO: add comparison settings
+    ComparisonSettings settings = 3;
 }
 
 message CompareMessageVsMessageResult {
