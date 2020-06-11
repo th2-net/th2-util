@@ -20,6 +20,8 @@ import static com.exactpro.sf.comparison.ComparisonUtil.getStatusType;
 import static com.google.protobuf.TextFormat.shortDebugString;
 
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -43,6 +45,7 @@ import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonEntry;
 import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonEntry.Builder;
 import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonEntryStatus;
 import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonEntryType;
+import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonSettings;
 import com.exactpro.th2.utility.messagecomparator.grpc.RxMessageComparatorServiceGrpc.MessageComparatorServiceImplBase;
 import com.google.protobuf.MessageOrBuilder;
 
@@ -100,15 +103,21 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
         protected final MessageWrapper first;
         /** This conatins values of simple type */
         protected final MessageWrapper second;
+        protected final ComparisonSettings comparisonSettings;
 
-        private MessagePair(MessageWrapper first, MessageWrapper second) {
+        protected MessagePair(MessageWrapper first, MessageWrapper second, ComparisonSettings comparisonSettings) {
             this.first = first;
             this.second = second;
+            this.comparisonSettings = comparisonSettings;
+        }
+
+        protected MessagePair(MessagePair messagePair) {
+            this(messagePair.first, messagePair.second, messagePair.comparisonSettings);
         }
 
         public static MessagePair from(CompareMessageVsMessageTaskOrBuilder messageVsMessageTask) {
             return new MessagePair(convertToMessagePair(messageVsMessageTask.getFirst()),
-                    convertToMessagePair(messageVsMessageTask.getSecond()));
+                    convertToMessagePair(messageVsMessageTask.getSecond()), messageVsMessageTask.getSettings());
         }
 
         private static MessageWrapper convertToMessagePair(Message protoMessage) {
@@ -119,8 +128,8 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
     private static class ComparisonMessagesResult extends MessagePair {
         protected final ComparisonResult comparisonResult;
 
-        private ComparisonMessagesResult(MessageWrapper first, MessageWrapper second, ComparisonResult comparisonResult) {
-            super(first, second);
+        private ComparisonMessagesResult(MessagePair messagePair, ComparisonResult comparisonResult) {
+            super(messagePair);
             this.comparisonResult = comparisonResult;
         }
 
@@ -134,13 +143,19 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
         }
 
         public static ComparisonMessagesResult compare(MessagePair messagePair) {
-            ComparatorSettings comparatorSettings = new ComparatorSettings();
+            ComparatorSettings comparatorSettings = createSettings(messagePair.comparisonSettings);
             ComparisonResult comparisonResult = MessageComparator.compare(messagePair.second, messagePair.first, comparatorSettings, false);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Comparion of message {} vs message {}" + comparisonResult,
                         shortDebugString(messagePair.first.getMessageId()), shortDebugString(messagePair.second.getMessageId()));
             }
-            return new ComparisonMessagesResult(messagePair.first, messagePair.second, comparisonResult);
+            return new ComparisonMessagesResult(messagePair, comparisonResult);
+        }
+
+        private static ComparatorSettings createSettings(ComparisonSettings protoSettings) {
+            return new ComparatorSettings()
+                    .setIgnoredFields(protoSettings.getIgnoreFieldsList().stream()
+                            .collect(Collectors.toUnmodifiableSet()));
         }
 
         @Nullable

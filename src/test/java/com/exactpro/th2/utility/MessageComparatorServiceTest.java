@@ -29,13 +29,14 @@ import com.exactpro.th2.infra.grpc.MessageID;
 import com.exactpro.th2.infra.grpc.MessageMetadata;
 import com.exactpro.th2.infra.grpc.Value;
 import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageRequest;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageResponse;
 import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageTask;
+import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonSettings;
 
 import io.reactivex.Single;
 
 public class MessageComparatorServiceTest {
 
+    private final static String IGNORED_FIELD = "IgnoredField";
     private MessageComparatorService service;
 
     @Before
@@ -49,6 +50,9 @@ public class MessageComparatorServiceTest {
                 .addComparisonTasks(CompareMessageVsMessageTask.newBuilder()
                         .setFirst(createMessage())
                         .setSecond(createMessage())
+                        .setSettings(ComparisonSettings.newBuilder()
+                                .addIgnoreFields(IGNORED_FIELD)
+                                .build())
                         .build())
                 .build()))
         .subscribe();
@@ -57,6 +61,7 @@ public class MessageComparatorServiceTest {
     private static Message createMessage() {
         return Message.newBuilder().setMetadata(createMessageMetadata())
                 .putFields("FieldSimple", createValue("1"))
+                .putFields(IGNORED_FIELD, createValue("6"))
                 .putFields("FieldList", createValue("2", "3a", "b4", "c5d"))
                 .build();
     }

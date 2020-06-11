@@ -15,7 +15,7 @@ service MessageComparatorService {
 
 //--// Settings //--//
 message ComparisonSettings {
-    repeated string ignore_fields = 1;
+    repeated string ignore_fields = 1; // Result of comparison for these fields (simple or collectin types) is NA
 }
 
 //--// Compare filter versus messages //--//
