@@ -17,6 +17,7 @@
 package com.exactpro.th2.utility;
 
 import static com.exactpro.sf.comparison.ComparisonUtil.getStatusType;
+import static com.exactpro.sf.comparison.Formatter.formatForHtml;
 import static com.google.protobuf.TextFormat.shortDebugString;
 
 import java.util.Objects;
@@ -83,6 +84,7 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
             }
         } else {
             LOGGER.error("Internal exception during comparation message vs message", throwable);
+            throw new RuntimeException(throwable); //FIXME: transfer internal error
         }
     }
 
@@ -92,9 +94,8 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
                 LOGGER.debug("Start comparison message vs message {}", shortDebugString(compareMessageVsMessageRequest));
             }
         } else {
-            if (LOGGER.isErrorEnabled()) {
-                LOGGER.error("Emit request problem", throwable);
-            }
+            LOGGER.error("Emit request problem", throwable);
+            throw new RuntimeException(throwable); //FIXME: transfer internal error
         }
     }
 
@@ -179,7 +180,7 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
         private static ComparisonEntry convertToComparisonEntry(ComparisonResult comparisonResult) {
             Builder builder = ComparisonEntry.newBuilder()
                     .setFirst(Formatter.formatExpected(comparisonResult))
-                    .setSecond(Objects.toString(comparisonResult.getActual(), null))
+                    .setSecond(formatForHtml(Objects.toString(comparisonResult.getActual(), null), false) )
                     .setType(comparisonResult.hasResults()
                             ? ComparisonEntryType.COLLECTION
                             : ComparisonEntryType.FIELD);
