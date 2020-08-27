@@ -39,15 +39,15 @@ public class MicroserviceMain {
         try {
             Configuration configuration = new UtilityConfiguration();
 
-            Server gRPCServer = ServerBuilder.forPort(configuration.getPort())
+            Server grpcServer = ServerBuilder.forPort(configuration.getPort())
                     .addService(new MessageComparatorService())
                     .build();
 
-            configureShutdownHook(gRPCServer);
+            configureShutdownHook(grpcServer);
 
-            gRPCServer.start();
+            grpcServer.start();
             LOGGER.info("Utility started");
-            gRPCServer.awaitTermination();
+            grpcServer.awaitTermination();
         } catch (RuntimeException | InterruptedException | IOException e) {
             LOGGER.error("Utility crashed", e);
             System.exit(-1);
