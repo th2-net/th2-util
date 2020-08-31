@@ -23,15 +23,19 @@ option java_multiple_files = true;
 option java_package = "com.exactpro.th2.utility.messagecomparator.grpc";
 
 service MessageComparatorService {
-    // Compare one filter versus some messages
+    // Compares a filter vs passed messages and returns comparison result for every pair.
     rpc compareFilterVsMessages (CompareFilterVsMessagesRequest) returns (CompareFilterVsMessagesResponse);
-    // Compare one message versus one message
+    // Compares a message vs another message and returns a comparison result.
     rpc compareMessageVsMessage (CompareMessageVsMessageRequest) returns (CompareMessageVsMessageResponse);
 }
 
 //--// Settings //--//
 message ComparisonSettings {
-    repeated string ignore_fields = 1; // Result of comparison for these fields (simple or collectin types) is NA
+    /*
+    * These fields will not be considered during comparison. It concerns fields with simple or collection types. 
+    * Comparison result will have the NA status for them.
+    */
+    repeated string ignore_fields = 1;
 }
 
 //--// Compare filter versus messages //--//
@@ -76,12 +80,28 @@ message CompareMessageVsMessageResult {
 //--// Common entry //--//
 
 message ComparisonEntry {
-    ComparisonEntryType type = 1; // isn't set for root entry otherwise it is required
-    ComparisonEntryStatus status = 2; // isn't set for collection entry type otherwise it is required
-    string first = 3; // This value is null for root entry otherwise it is required
-    string second = 4; // This value is null for root entry otherwise it is required
-    FilterOperation operation = 5; // isn't set for root entry otherwise it is required
-    bool is_key = 6; // is null for root entry otherwise it is required
+    /* The type field has default value for a root element and it should be skipped during analyse. It has real value for other fields. */
+    ComparisonEntryType type = 1;
+    /*
+    * The status field has default value for a element with collection type and it should be skipped during analyse.
+    * It has real value for other fields. Fields with nested elements have aggregated value.
+    */
+    ComparisonEntryStatus status = 2;
+    /* The first field has default value for a root element and it should be skipped during analyse. It has value of the first message of filter in other cases. */
+    string first = 3;
+    /* The second field has default value for a root element and it should be skipped during analyse. It has value of the second message in other cases. */
+    string second = 4;
+    /*
+    * The operation field has default value for a root element and it should be skipped during analyse.
+    * This value is taken from filter in case filter vs message comparison or it is EQUAL in case message vs message comparison.
+    */
+    FilterOperation operation = 5;
+    /*
+    * The is_key field has default value for a root element and it should be skipped during analyse.
+    * It is taken from filter in case filter versus message comparison otherwise it is false.
+    */
+    bool is_key = 6;
+    /* The fields contains mapping name to ComparisonEntry for nested fields. */
     map<string, ComparisonEntry> fields = 7;
 }
 
