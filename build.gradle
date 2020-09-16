@@ -101,6 +101,7 @@ apply plugin: 'com.palantir.docker'
 
 ext {
     slf4jVersion        = '1.7.30'
+    th2SailfishUtils = '1.2-SNAPSHOT'
     dockerImageVersion  = release_version
 }
 
@@ -110,6 +111,7 @@ dependencies {
     compile project(':grpc-utility')
 
     compile "com.exactpro.th2:th2-common:${th2CommonVersion}"
+    compile "com.exactpro.th2:th2-sailfish-utils:${th2SailfishUtils}"
 
     compile "com.exactpro.sf:sailfish-core:${sailfishVersion}"
 
