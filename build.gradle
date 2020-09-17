@@ -135,7 +135,6 @@ application {
 
 applicationName = 'service'
 
-
 distTar {
     archiveName "${applicationName}.tar"
 }
