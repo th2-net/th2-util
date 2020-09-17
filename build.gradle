@@ -13,14 +13,14 @@ allprojects {
         sharedDir           = file("${project.rootDir}/shared")
 
         sailfishVersion     = '3.2-SNAPSHOT'
-        th2CommonVersion    = '1.3.0'
+        th2CommonVersion    = '1.4.2'
     }
 
     group = 'com.exactpro.th2'
     version = release_version
 
-    sourceCompatibility = 1.11
-    targetCompatibility = 1.11
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     repositories {
         maven {
@@ -46,16 +46,18 @@ allprojects {
 
     jar {
         manifest {
-            attributes('Created-By': System.getProperty('java.version') + ' (' + System.getProperty('java.vendor') + ')')
-            attributes('Specification-Title': '')
-            attributes('Specification-Vendor': 'Exactpro Systems LLC')
-            attributes('Implementation-Title': "${project.name}")
-            attributes('Implementation-Vendor': 'Exactpro Systems LLC')
-            attributes('Implementation-Vendor-Id': 'com.exactpro')
-            attributes('Implementation-Version': "${version}")
-            attributes('Implementation-Version-Date': getDate())
+            attributes(
+                    'Created-By':               "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})",
+                    'Specification-Title':      '',
+                    'Specification-Vendor':     'Exactpro Systems LLC',
+                    'Implementation-Title':     project.archivesBaseName,
+                    'Implementation-Vendor':    'Exactpro Systems LLC',
+                    'Implementation-Vendor-Id': 'com.exactpro',
+                    'Implementation-Version':   project.version
+            )
         }
     }
+
 
     publishing {
         publications {
@@ -101,7 +103,6 @@ apply plugin: 'com.palantir.docker'
 
 ext {
     slf4jVersion        = '1.7.30'
-    th2SailfishUtils = '1.2-SNAPSHOT'
     dockerImageVersion  = release_version
 }
 
@@ -111,7 +112,7 @@ dependencies {
     compile project(':grpc-utility')
 
     compile "com.exactpro.th2:th2-common:${th2CommonVersion}"
-    compile "com.exactpro.th2:th2-sailfish-utils:${th2SailfishUtils}"
+    compile "com.exactpro.th2:th2-sailfish-utils:1.3.0"
 
     compile "com.exactpro.sf:sailfish-core:${sailfishVersion}"
 
@@ -133,10 +134,11 @@ application {
     mainClassName 'com.exactpro.th2.utility.MicroserviceMain'
 }
 
-applicationName = archivesBaseName
+applicationName = 'service'
+
 
 distTar {
-    archiveName "${archivesBaseName}.tar"
+    archiveName "${applicationName}.tar"
 }
 
 dockerPrepare {
@@ -144,14 +146,5 @@ dockerPrepare {
 }
 
 docker {
-    name "${target_docker_repository}/${docke_image_name}:${dockerImageVersion}"
-    tag 'local-version', "${docke_image_name}:${dockerImageVersion}"
-
-    copySpec.from(tarTree("$buildDir/distributions/${archivesBaseName}.tar"))
-}
-
-static def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('yyyyMMdd-HH:mm:ss.SSS')
-    return formattedDate
+    copySpec.from(tarTree("$buildDir/distributions/${applicationName}.tar"))
 }

@@ -6,5 +6,5 @@ RUN gradle dockerPrepare -Prelease_version=${app_version}
 FROM openjdk:12-alpine
 ENV GRPC_PORT=8080
 WORKDIR /home
-COPY --from=build ./ .
-ENTRYPOINT ["/home/utility-service/bin/utility-service", "/home/utility-service/etc/config.yml"]
+COPY --from=build /home/gradle/build/docker .
+ENTRYPOINT ["/home/service/bin/service", "/home/service/etc/config.yml"]
