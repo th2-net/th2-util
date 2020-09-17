@@ -76,12 +76,9 @@ task zipProtobuf (type: Zip) {
     from sourceSets.main.proto.srcDirs
 }
 
-artifactoryPublish.skip = false
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId = 'th2-grpc-utility'
             artifact source: zipProtobuf, extension: 'zip'
         }
     }
