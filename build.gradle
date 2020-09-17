@@ -58,7 +58,6 @@ allprojects {
         }
     }
 
-
     publishing {
         publications {
             mavenJava(MavenPublication) {
