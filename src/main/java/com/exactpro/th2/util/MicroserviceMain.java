@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.exactpro.th2.utility;
+package com.exactpro.th2.util;
 
 import static com.exactpro.th2.common.metrics.CommonMetrics.setLiveness;
 import static com.exactpro.th2.common.metrics.CommonMetrics.setReadiness;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.exactpro.th2.utility;
+package com.exactpro.th2.util;
 
 import static com.exactpro.sf.comparison.ComparisonUtil.getStatusType;
 import static com.exactpro.sf.comparison.Formatter.formatForHtml;

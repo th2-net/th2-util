@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.exactpro.th2.utility;
+package com.exactpro.th2.util;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
