@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.exactpro.th2.utility;
+package com.exactpro.th2.util;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,16 +24,16 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.exactpro.th2.infra.grpc.ConnectionID;
-import com.exactpro.th2.infra.grpc.ListValue;
-import com.exactpro.th2.infra.grpc.Message;
-import com.exactpro.th2.infra.grpc.MessageID;
-import com.exactpro.th2.infra.grpc.MessageMetadata;
-import com.exactpro.th2.infra.grpc.Value;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageRequest;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageResponse;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageTask;
-import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonSettings;
+import com.exactpro.th2.common.grpc.ConnectionID;
+import com.exactpro.th2.common.grpc.ListValue;
+import com.exactpro.th2.common.grpc.Message;
+import com.exactpro.th2.common.grpc.MessageID;
+import com.exactpro.th2.common.grpc.MessageMetadata;
+import com.exactpro.th2.common.grpc.Value;
+import com.exactpro.th2.util.grpc.CompareMessageVsMessageRequest;
+import com.exactpro.th2.util.grpc.CompareMessageVsMessageResponse;
+import com.exactpro.th2.util.grpc.CompareMessageVsMessageTask;
+import com.exactpro.th2.util.grpc.ComparisonSettings;
 
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;

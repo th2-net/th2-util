@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.exactpro.th2.utility;
+package com.exactpro.th2.util;
 
 import static com.exactpro.sf.comparison.ComparisonUtil.getStatusType;
 import static com.exactpro.sf.comparison.Formatter.formatForHtml;
 import static com.google.protobuf.TextFormat.shortDebugString;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
@@ -33,21 +32,21 @@ import com.exactpro.sf.comparison.ComparisonResult;
 import com.exactpro.sf.comparison.Formatter;
 import com.exactpro.sf.comparison.MessageComparator;
 import com.exactpro.sf.scriptrunner.StatusType;
-import com.exactpro.th2.MessageWrapper;
-import com.exactpro.th2.ProtoToIMessageConverter;
-import com.exactpro.th2.infra.grpc.Message;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareFilterVsMessagesRequest;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareFilterVsMessagesResponse;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageRequest;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageResponse;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageResult;
-import com.exactpro.th2.utility.messagecomparator.grpc.CompareMessageVsMessageTaskOrBuilder;
-import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonEntry;
-import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonEntry.Builder;
-import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonEntryStatus;
-import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonEntryType;
-import com.exactpro.th2.utility.messagecomparator.grpc.ComparisonSettings;
-import com.exactpro.th2.utility.messagecomparator.grpc.RxMessageComparatorServiceGrpc.MessageComparatorServiceImplBase;
+import com.exactpro.th2.common.grpc.Message;
+import com.exactpro.th2.sailfish.utils.MessageWrapper;
+import com.exactpro.th2.sailfish.utils.ProtoToIMessageConverter;
+import com.exactpro.th2.util.grpc.CompareFilterVsMessagesRequest;
+import com.exactpro.th2.util.grpc.CompareFilterVsMessagesResponse;
+import com.exactpro.th2.util.grpc.CompareMessageVsMessageRequest;
+import com.exactpro.th2.util.grpc.CompareMessageVsMessageResponse;
+import com.exactpro.th2.util.grpc.CompareMessageVsMessageResult;
+import com.exactpro.th2.util.grpc.CompareMessageVsMessageTaskOrBuilder;
+import com.exactpro.th2.util.grpc.ComparisonEntry;
+import com.exactpro.th2.util.grpc.ComparisonEntry.Builder;
+import com.exactpro.th2.util.grpc.ComparisonEntryStatus;
+import com.exactpro.th2.util.grpc.ComparisonEntryType;
+import com.exactpro.th2.util.grpc.ComparisonSettings;
+import com.exactpro.th2.util.grpc.RxMessageComparatorServiceGrpc.MessageComparatorServiceImplBase;
 import com.google.protobuf.MessageOrBuilder;
 
 import io.reactivex.Single;
