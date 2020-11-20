@@ -28,6 +28,10 @@ allprojects {
             name 'Bintray'
             url 'https://dl.bintray.com/exactpro/th2'
         }
+        maven {
+            name 'Bintray'
+            url 'https://dl.bintray.com/exactpro/sailfish'
+        }
         mavenLocal()
 
         configurations.all {
