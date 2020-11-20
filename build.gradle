@@ -9,6 +9,7 @@ allprojects {
 
     ext {
         sharedDir           = file("${project.rootDir}/shared")
+        sailfishVersion     = '3.2'
     }
 
     group = 'com.exactpro.th2'
@@ -24,12 +25,8 @@ allprojects {
         }
         mavenCentral()
         maven {
-            name 'Artifactory snapshot'
-            url 'http://artifactory5.exp.exactpro.com/artifactory/libs-snapshot'
-        }
-        maven {
-            name 'Artifactory release'
-            url 'http://artifactory5.exp.exactpro.com/artifactory/libs-release'
+            name 'Bintray'
+            url 'https://dl.bintray.com/exactpro/th2'
         }
         mavenLocal()
 
@@ -73,13 +70,13 @@ apply plugin: 'application'
 apply plugin: 'com.palantir.docker'
 
 dependencies {
-    api platform('com.exactpro.th2:bom:2.1.+')
+    api platform('com.exactpro.th2:bom:2.3.+')
 
     implementation "com.exactpro.th2:common"
     implementation "com.exactpro.th2:sailfish-utils"
     implementation "com.exactpro.th2:grpc-util"
 
-    implementation "com.exactpro.sf:sailfish-core:3.2-SNAPSHOT"
+    implementation "com.exactpro.sf:sailfish-core:${sailfishVersion}"
 
     implementation "org.slf4j:slf4j-log4j12"
     implementation "org.slf4j:slf4j-api"
