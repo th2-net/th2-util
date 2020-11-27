@@ -9,7 +9,7 @@ You can see provided gRPC calls with description in [gRPC scheme](grpc-utility/s
 Util component has got only one inbound gRPC pin . It may be used to link other components with 'util'. 
 ```yaml
 apiVersion: th2.exactpro.com/v1
-kind: Th2GenericBox
+kind: Th2Box
 metadata:
   name: util
 spec:
