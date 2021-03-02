@@ -38,15 +38,15 @@ import com.exactpro.th2.util.grpc.ComparisonSettings;
 import io.reactivex.Single;
 import io.reactivex.observers.TestObserver;
 
-public class MessageComparatorServiceTest {
+public class MessageComparatorTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageComparatorServiceTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageComparatorTest.class);
     private static final String IGNORED_FIELD = "IgnoredField";
-    private MessageComparatorService service;
+    private MessageComparator service;
 
     @Before
     public void before() {
-        service = new MessageComparatorService();
+        service = new MessageComparator();
     }
 
     @Test
@@ -80,7 +80,7 @@ public class MessageComparatorServiceTest {
         .subscribe();
     }
 
-    private static TestObserver<CompareMessageVsMessageResponse> compareMessageVsMessageCall(MessageComparatorService service, Message first, Message second) {
+    private static TestObserver<CompareMessageVsMessageResponse> compareMessageVsMessageCall(MessageComparator service, Message first, Message second) {
         return service.compareMessageVsMessage(Single.just(CompareMessageVsMessageRequest.newBuilder()
                 .addComparisonTasks(CompareMessageVsMessageTask.newBuilder()
                         .setFirst(first)
@@ -120,7 +120,7 @@ public class MessageComparatorServiceTest {
         return Value.newBuilder()
                 .setListValue(ListValue.newBuilder()
                         .addAllValues(Stream.of(values)
-                                .map(MessageComparatorServiceTest::createValue)
+                                .map(MessageComparatorTest::createValue)
                                 .collect(Collectors.toList()))
                         .build())
                 .build();
