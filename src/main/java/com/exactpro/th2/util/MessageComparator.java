@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2020 Exactpro (Exactpro Systems Limited)
+ * Copyright 2020-2021 Exactpro (Exactpro Systems Limited)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import com.exactpro.sf.comparison.ComparatorSettings;
 import com.exactpro.sf.comparison.ComparisonResult;
 import com.exactpro.sf.comparison.Formatter;
-import com.exactpro.sf.comparison.MessageComparator;
 import com.exactpro.sf.scriptrunner.StatusType;
 import com.exactpro.th2.common.grpc.Message;
 import com.exactpro.th2.sailfish.utils.MessageWrapper;
@@ -46,14 +45,14 @@ import com.exactpro.th2.util.grpc.ComparisonEntry.Builder;
 import com.exactpro.th2.util.grpc.ComparisonEntryStatus;
 import com.exactpro.th2.util.grpc.ComparisonEntryType;
 import com.exactpro.th2.util.grpc.ComparisonSettings;
-import com.exactpro.th2.util.grpc.RxMessageComparatorServiceGrpc.MessageComparatorServiceImplBase;
+import com.exactpro.th2.util.grpc.RxMessageComparatorGrpc.MessageComparatorImplBase;
 import com.google.protobuf.MessageOrBuilder;
 
 import io.reactivex.Single;
 
-public class MessageComparatorService extends MessageComparatorServiceImplBase {
+public class MessageComparator extends MessageComparatorImplBase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MessageComparatorService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageComparator.class);
 
     private static final ProtoToIMessageConverter CONVERTER = new ProtoToIMessageConverter(new DefaultMessageFactoryProxy(), null, null);
 
@@ -64,7 +63,7 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
 
     @Override
     public Single<CompareMessageVsMessageResponse> compareMessageVsMessage(Single<CompareMessageVsMessageRequest> request) {
-        return request.doOnEvent(MessageComparatorService::loggingMessageVsMessageStart)
+        return request.doOnEvent(MessageComparator::loggingMessageVsMessageStart)
                 .flattenAsFlowable(CompareMessageVsMessageRequest::getComparisonTasksList)
                 .map(MessagePair::from)
                 .map(ComparisonMessagesResult::compare)
@@ -73,7 +72,7 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
                 .map(list -> CompareMessageVsMessageResponse.newBuilder()
                         .addAllComparisonResults(list)
                         .build())
-                .doOnEvent(MessageComparatorService::loggingMessageVsMessageEnd);
+                .doOnEvent(MessageComparator::loggingMessageVsMessageEnd);
     }
 
     private static void loggingMessageVsMessageEnd(MessageOrBuilder compareMessageVsMessageResponse, Throwable throwable) {
@@ -144,7 +143,7 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
 
         public static ComparisonMessagesResult compare(MessagePair messagePair) {
             ComparatorSettings comparatorSettings = createSettings(messagePair.comparisonSettings);
-            ComparisonResult comparisonResult = MessageComparator.compare(messagePair.second, messagePair.first, comparatorSettings, false);
+            ComparisonResult comparisonResult = com.exactpro.sf.comparison.MessageComparator.compare(messagePair.second, messagePair.first, comparatorSettings, false);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Comparion of message {} vs message {}" + comparisonResult,
                         shortDebugString(messagePair.first.getMessageId()), shortDebugString(messagePair.second.getMessageId()));
@@ -179,7 +178,7 @@ public class MessageComparatorService extends MessageComparatorServiceImplBase {
         private static ComparisonEntry convertToComparisonEntry(ComparisonResult comparisonResult) {
             Builder builder = ComparisonEntry.newBuilder()
                     .setFirst(Formatter.formatExpected(comparisonResult))
-                    .setSecond(formatForHtml(Objects.toString(comparisonResult.getActual(), null), false) )
+                    .setSecond(formatForHtml(Objects.toString(comparisonResult.getActual(), null), false))
                     .setType(comparisonResult.hasResults()
                             ? ComparisonEntryType.COLLECTION
                             : ComparisonEntryType.FIELD);
