@@ -19,8 +19,8 @@ package com.exactpro.th2.util;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class MessageComparatorTest {
     private static final String IGNORED_FIELD = "IgnoredField";
     private MessageComparator service;
 
-    @Before
+    @BeforeEach
     public void before() {
         service = new MessageComparator();
     }
