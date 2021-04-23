@@ -1,4 +1,4 @@
-## How it works (3.0.0)
+## How it works (3.1.0)
 
 The Utility component contains a methods to execute general TH2 work.
 The box has embedded gRPC server that helps reuse logic implemented on Java language in components written in other languages via gRPC call.
@@ -19,6 +19,15 @@ spec:
 ```
 
 ## Changes
+
+### 3.1.0
+
++ reads dictionaries from the /var/th2/config/dictionary folder
++ uses mq_router, grpc_router, cradle_manager optional JSON configs from the /var/th2/config folder
++ tries to load log4j.properties files from sources in order: '/var/th2/config', '/home/etc', configured path via cmd, default configuration
++ update Cradle version. Introduce async API for storing events
++ removed gRPC event loop handling
++ fixed dictionary reading
 
 ### 3.0.0
 
