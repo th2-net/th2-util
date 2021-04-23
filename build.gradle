@@ -84,8 +84,8 @@ apply plugin: 'com.palantir.docker'
 dependencies {
     api platform('com.exactpro.th2:bom:2.10.1')
 
-    implementation "com.exactpro.th2:common:3.6.0"
-    implementation "com.exactpro.th2:sailfish-utils:3.1.1"
+    implementation "com.exactpro.th2:common:3.13.1"
+    implementation "com.exactpro.th2:sailfish-utils:3.3.1"
     implementation "com.exactpro.th2:grpc-util:3.0.0"
 
     implementation "com.exactpro.sf:sailfish-core:${sailfishVersion}"
