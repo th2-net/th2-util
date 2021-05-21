@@ -1,92 +1,74 @@
 plugins {
-    id 'com.palantir.docker' version '0.25.0' apply false
+    id 'java'
+    id 'java-library'
+    id 'application'
+    id 'maven-publish'
+    id 'com.palantir.docker' version '0.25.0'
 }
 
-allprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven-publish'
-    apply plugin: 'java-library'
+ext {
+    sharedDir           = file("${project.rootDir}/shared")
+    sailfishVersion     = '3.2.1572'
+}
 
-    ext {
-        sharedDir           = file("${project.rootDir}/shared")
-        sailfishVersion     = '3.2'
+group = 'com.exactpro.th2'
+version = release_version
+sourceCompatibility = 11
+targetCompatibility = 11
+
+repositories {
+    maven {
+        name 'MavenLocal'
+        url sharedDir
     }
-
-    group = 'com.exactpro.th2'
-    version = release_version
-
-    sourceCompatibility = 11
-    targetCompatibility = 11
-
+    mavenCentral()
+    maven {
+        name 'Sonatype_snapshots'
+        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+    }
+    maven {
+        name 'Sonatype_releases'
+        url 'https://s01.oss.sonatype.org/content/repositories/releases/'
+    }
+    mavenLocal()
+    configurations.all {
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    }
+}
+jar {
+    manifest {
+        attributes(
+                'Created-By':               "${System.getProperty('java.version')} (${System.getProperty('java.or')})",
+                'Specification-Title':      '',
+                'Specification-Vendor':     'Exactpro Systems LLC',
+                'Implementation-Title':     project.archivesBaseName,
+                'Implementation-Vendor':    'Exactpro Systems LLC',
+                'Implementation-Vendor-Id': 'com.exactpro',
+                'Implementation-Version':   project.version
+        )
+    }
+}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
     repositories {
         maven {
-            name 'MavenLocal'
-            url sharedDir
-        }
-        mavenCentral()
-        maven {
-            name 'Bintray'
-            url 'https://dl.bintray.com/exactpro/th2'
-        }
-        maven {
-            name 'Bintray'
-            url 'https://dl.bintray.com/exactpro/sailfish'
-        }
-        maven {
-            name 'Sonatype_snapshots'
-            url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-        }
-        maven {
-            name 'Sonatype_releases'
-            url 'https://s01.oss.sonatype.org/content/repositories/releases/'
-        }
-        mavenLocal()
-
-        configurations.all {
-            resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-            resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
-        }
-    }
-
-    jar {
-        manifest {
-            attributes(
-                    'Created-By':               "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})",
-                    'Specification-Title':      '',
-                    'Specification-Vendor':     'Exactpro Systems LLC',
-                    'Implementation-Title':     project.archivesBaseName,
-                    'Implementation-Vendor':    'Exactpro Systems LLC',
-                    'Implementation-Vendor-Id': 'com.exactpro',
-                    'Implementation-Version':   project.version
-            )
-        }
-    }
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-            }
-        }
-
-        repositories {
-            maven {
-                name = 'localRepo'
-                url = sharedDir
-            }
+            name = 'localRepo'
+            url = sharedDir
         }
     }
 }
 
-apply plugin: 'application'
-apply plugin: 'com.palantir.docker'
-
 dependencies {
-    api platform('com.exactpro.th2:bom:2.10.1')
+    api platform('com.exactpro.th2:bom:3.0.0')
 
-    implementation "com.exactpro.th2:common:2.14.0"
-    implementation "com.exactpro.th2:sailfish-utils:2.3.1"
-    implementation "com.exactpro.th2:grpc-util:2.4.1"
+    implementation "com.exactpro.th2:common:2.17.2"
+    implementation "com.exactpro.th2:sailfish-utils:2.4.2"
+    implementation "com.exactpro.th2:grpc-util:2.4.2"
 
     implementation "com.exactpro.sf:sailfish-core:${sailfishVersion}"
 
