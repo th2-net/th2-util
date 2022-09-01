@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,14 @@ public class MicroserviceMain {
             setLiveness(true);
             CommonFactory factory = CommonFactory.createFromArguments(args);
             resources.add(factory);
+
+            //--//--
+
+            Configuration configuration = factory.getCustomConfiguration(Configuration.class);
+            LOGGER.info('s' + StringUtils.center("test string " + configuration.getLogMessageSize(), configuration.getLogMessageSize() - 2, '-') + 'f');
+
+            //--//--
+
             Server gRPCServer = factory.getGrpcRouter().startServer(new MessageComparator());
             resources.add(() -> {
                 gRPCServer.shutdown();

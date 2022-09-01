@@ -18,6 +18,35 @@ spec:
       connection-type: grpc
 ```
 
+## Custom config
+
+logMessageSize - test string size in character which is printed as info log at the start of component
+
+```yaml
+apiVersion: th2.exactpro.com/v1
+kind: Th2Box
+metadata:
+  name: util
+spec:
+  image-name: ghcr.io/th2-net/th2-util
+  image-version: <image version>
+  custom-config:
+    logMessageSize: 1024
+  extended-settings:
+    service:
+      enabled: true
+      nodePort: '<port>'
+    envVariables:
+      JAVA_TOOL_OPTIONS: "-XX:+ExitOnOutOfMemoryError"
+    resources:
+      limits:
+        memory: 200Mi
+        cpu: 200m
+      requests:
+        memory: 100Mi
+        cpu: 50m
+```
+
 ## Changes
 
 ### 3.1.0
