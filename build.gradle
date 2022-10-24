@@ -69,17 +69,6 @@ allprojects {
         mavenCentral()
         mavenLocal()
 
-
-        maven {
-            name 'Bintray'
-            url 'https://dl.bintray.com/exactpro/th2'
-        }
-        maven {
-            name 'Bintray'
-            url 'https://dl.bintray.com/exactpro/sailfish'
-        }
-
-
         configurations.all {
             resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
             resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
