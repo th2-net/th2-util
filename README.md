@@ -1,4 +1,4 @@
-## How it works (3.1.0)
+## How it works (3.2.0)
 
 The Utility component contains a methods to execute general TH2 work.
 The box has embedded gRPC server that helps reuse logic implemented on Java language in components written in other languages via gRPC call.
@@ -19,6 +19,12 @@ spec:
 ```
 
 ## Changes
+
+### 3.2.0
+
++ updated common to `3.44.0`
++ updated sailfish to `3.3.54`
++ updated grpc-util to `3.0.4`
 
 ### 3.1.0
 
