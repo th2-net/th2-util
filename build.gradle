@@ -1,6 +1,6 @@
 plugins {
     id 'com.palantir.docker' version '0.25.0' apply false
-    id "org.owasp.dependencycheck" version "7.4.4"
+    id "org.owasp.dependencycheck" version "8.1.2"
 
 }
 
@@ -110,12 +110,29 @@ allprojects {
 apply plugin: 'application'
 apply plugin: 'com.palantir.docker'
 
-dependencies {
-    api platform('com.exactpro.th2:bom:4.1.0')
+configurations.implementation {
+    exclude group: 'com.fasterxml.jackson.dataformat', module: 'jackson-dataformat-yaml' // because of the vulnerability
+    exclude group: 'junit', module: 'junit' // because of the vulnerability
+}
 
-    implementation 'com.exactpro.th2:common:3.44.0'
+dependencyCheck {
+    formats=['SARIF', 'JSON', 'HTML']
+    failBuildOnCVSS=5
+    suppressionFile="supression.xml"
+
+    analyzers {
+        assemblyEnabled = false
+        nugetconfEnabled = false
+        nodeEnabled = false
+    }
+}
+
+dependencies {
+    api platform('com.exactpro.th2:bom:4.2.0')
+
+    implementation 'com.exactpro.th2:common:3.44.1'
     implementation 'com.exactpro.th2:sailfish-utils:3.14.0'
-    implementation 'com.exactpro.th2:grpc-util:3.0.4'
+    implementation 'com.exactpro.th2:grpc-util:3.1.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
 }
